@@ -12,8 +12,23 @@ import Baslik from "./../../components/baslik/Baslik";
 import Acardion from "../../components/acardion/Acardion";
 import ProjelerGlide from "../../components/ProjerlerGlide/ProjelerGlide";
 
+import axios from "axios";
+
 const Anasayfa = () => {
+  const [projeler, setProjeler] = useState([]);
+
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/v1/post/small?page=0&size=10');
+        console.log('Data:', response.data); // Çekilen veriler burada
+        const data = response.data
+        setProjeler(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
     const glide = new Glide(".glide", {
       type: "carousel",
       startAt: 0,
@@ -22,35 +37,12 @@ const Anasayfa = () => {
       // autoplay: 4000,
     });
 
+
+    fetchData();
     glide.mount();
   }, []);
 
-  const projeler = [
-    {
-      img: "/images/projects/bestTeam/1.jpg",
-      title: "React, Next.js, Tailwind CSS, Redux, Redux",
-      lokasyon: "Çanakkale Merkez",
-      price: "3.500.000₺",
-    },
-    {
-      img: "/images/projects/bestTeam/3.jpg",
-      title: "React, Next.js, Tailwind CSS, Redux, Redux",
-      lokasyon: "Çanakkale Merkez",
-      price: "3.500.000₺",
-    },
-    {
-      img: "/images/projects/bestTeam/2.jpg",
-      title: "React, Next.js, Tailwind CSS, Redux, Redux",
-      lokasyon: "Çanakkale Merkez",
-      price: "3.500.000₺",
-    },
-    {
-      img: "/images/projects/bestTeam/4.jpg",
-      title: "React, Next.js, Tailwind CSS, Redux, Redux",
-      lokasyon: "Çanakkale Merkez",
-      price: "3.500.000₺",
-    },
-  ];
+
 
   const faqs = [
     {

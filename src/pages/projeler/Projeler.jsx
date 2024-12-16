@@ -2,7 +2,27 @@ import { Link } from "react-router-dom";
 import "./Projeler.scss";
 import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined";
 import LİstCard from "../../components/listCard/LİstCard";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 const Projeler = () => {
+  const [projeler, setProjeler] = useState([]);
+  useEffect(() => {
+    
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/v1/post/small?page=0&size=10');
+        console.log('Data:', response.data); // Çekilen veriler burada
+        const data = response.data
+        setProjeler(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="projeler">
       <div className="container">
@@ -53,12 +73,12 @@ const Projeler = () => {
               <hr />
             </div>
             <div className="list">
-                <LİstCard/>
-                <LİstCard/>
-                <LİstCard/>
-                <LİstCard/>
-                <LİstCard/>
-                <LİstCard/>
+            {projeler.map((proje, index) => (
+                 <LİstCard key={index} proje={proje}/>
+              ))}
+
+               
+                
             </div>
           </div>
         </div>

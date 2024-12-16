@@ -15,10 +15,31 @@ import pool from "/images/detayProjectItems/swimming-pool.png";
 
 import Baslik from "../../components/baslik/Baslik";
 import DogruGlide from "../../components/urunDetayGlide/DogruGlide";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProjelerGlide from "../../components/ProjerlerGlide/ProjelerGlide";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const ProjeDetay = () => {
+  const {id} = useParams();
+  const [proje , setProje] = useState(null);
+  const [digerProjeler , setDigerProjeler] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/v1/post/get-by-id?id=${id}`);
+        const response2 = await axios.get("http://localhost:8080/api/v1/post/small?page=0&size=10");
+        setProje(response.data);
+        setDigerProjeler(response2.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const faqs = [
     {
       question: "Satın almış olduğum ürünler garantili mi?",
@@ -53,38 +74,15 @@ const ProjeDetay = () => {
     { img: "/images/dogruDaire/yatirim.jpg", title: "Gelecek Değeri" },
   ];
 
-  const projeler = [
-    {
-      img: "/images/projects/bestTeam/1.jpg",
-      title: "React, Next.js, Tailwind CSS, Redux, Redux",
-      lokasyon: "Çanakkale Merkez",
-      price: "3.500.000₺",
-    },
-    {
-      img: "/images/projects/bestTeam/3.jpg",
-      title: "React, Next.js, Tailwind CSS, Redux, Redux",
-      lokasyon: "Çanakkale Merkez",
-      price: "3.500.000₺",
-    },
-    {
-      img: "/images/projects/bestTeam/2.jpg",
-      title: "React, Next.js, Tailwind CSS, Redux, Redux",
-      lokasyon: "Çanakkale Merkez",
-      price: "3.500.000₺",
-    },
-    {
-      img: "/images/projects/bestTeam/4.jpg",
-      title: "React, Next.js, Tailwind CSS, Redux, Redux",
-      lokasyon: "Çanakkale Merkez",
-      price: "3.500.000₺",
-    },
-  ];
-
   const [selectedImage, setSelectedImage] = useState("/images/projects/project1/interior-2685517_1280.jpg");
 
   const handleImageClick = (image) => {
     setSelectedImage(image); // Yeni resmi güncelle
   };
+
+  if ((proje==null || digerProjeler == []) ) {
+    return <div>Yükleniyor...</div>;
+  }
 
   return (
     <div className="projeDetay">
@@ -98,7 +96,7 @@ const ProjeDetay = () => {
               </h3>
             </div>
             <div className="title">
-              <h1>Proje İsmi Buraya Gelecek</h1>
+              <h1>{proje.title}</h1>
             </div>
           </div>
         </div>
@@ -119,50 +117,37 @@ const ProjeDetay = () => {
             </div>
 
             <div className="detays">
-              <InfoCard img={metrekare} value={"144 m²"} tag={"Brüt Metre"} />
-              <InfoCard img={Living} value={"3+1"} tag={"Oda Sayısı"} />
-              <InfoCard img={radiator} value={"Yerden Isıtma"} tag={"Isıtma"} />
-              <InfoCard img={chef} value={"Kapalı"} tag={"Mutfak Tipi"} />
-              <InfoCard img={parking} value={"Var"} tag={"Otopark"} />
+              <InfoCard img={metrekare} value={proje.postDetails.brutMetrekare} tag={"Brüt Metre"} />
+              <InfoCard img={Living} value={proje.postDetails.odaSayisi} tag={"Oda Sayısı"} />
+              <InfoCard img={radiator} value={proje.postDetails.isitma} tag={"Isıtma"} />
+              <InfoCard img={chef} value={proje.postDetails.mutfakTipi ? "Açık" : "Kapalı"} tag={"Mutfak Tipi"} />
+              <InfoCard img={parking} value={proje.postDetails.otopark ? "Var" : "Yok"} tag={"Otopark"} />
               <InfoCard
                 img={pool}
-                value={"Var"}
+                value={proje.postDetails.havuz ? "var" : "Yok"}
                 tag={"Havuz"}
               />
-              <InfoCard img={playground} value={"Var"} tag={"Oyun Parkı"} />
+              <InfoCard img={playground} value={proje.postDetails.oyunPark ? "Var" : "Yok"} tag={"Oyun Parkı"} />
               <InfoCard
                 img={security}
-                value={"Var"}
+                value={proje.postDetails.güvenlik ? "Var" : "Yok"}
                 tag={"Güvenlik"}
               />
-              <InfoCard img={footballField} value={"Var"} tag={"Spor Sahaları"} />
+              <InfoCard img={footballField} value={proje.postDetails.sporSalon ? "Var" : "Yok"} tag={"Spor Sahaları"} />
             </div>
           </div>
 
           <div className="projectDetay">
-            <h3>Bu projede aslen</h3>
+            <h3>Proje Detayları</h3>
             <div className="desc">
               <p>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Alias
-                sit magni reprehenderit! Repudiandae maxime officiis, voluptate
-                id vitae aspernatur veniam modi! Error repellat facilis quidem
-                animi. Suscipit asperiores ipsa dolor!
+              {proje.postDetails.context1}
               </p>
               <p>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore
-                laudantium modi nisi explicabo aut reiciendis excepturi quas
-                veritatis nam possimus, officia vero repellat assumenda, eius
-                tempore minima? Accusamus at provident iste quis nam, blanditiis
-                dolores! Id natus quasi possimus voluptates, iste assumenda
-                ipsum totam consectetur expedita nobis qui debitis optio!
+              {proje.postDetails.context2}
               </p>
               <p>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore
-                laudantium modi nisi explicabo aut reiciendis excepturi quas
-                veritatis nam possimus, officia vero repellat assumenda, eius
-                tempore minima? Accusamus at provident iste quis nam, blanditiis
-                dolores! Id natus quasi possimus voluptates, iste assumenda
-                ipsum totam consectetur expedita nobis qui debitis optio!
+              {proje.postDetails.context3}
               </p>
             </div>
           </div>
@@ -198,7 +183,7 @@ const ProjeDetay = () => {
               <ProjelerGlide
                 key={window.location.pathname}
                 perView={4}
-                projeler={projeler}
+                projeler={digerProjeler}
               />
             </div>
           </div>

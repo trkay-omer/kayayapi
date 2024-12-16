@@ -6,30 +6,33 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 
 const ProjelerGlide = ({ projeler, perView }) => {
-  
+
   useEffect(() => {
-    const glideDiger = new Glide(".glideDiger", {
-      type: "carousel",
-      gap: 20,
-      perView: perView,
-      breakpoints: {
-        1024: {
-          perView: 3,
-        },
 
-        780: {
-          perView: 2,
-        },
-        500: {
-          perView: 1,
-        },
-      },
-    });
+    if (projeler.length > 0) {
+      const glideDiger = new Glide(".glideDiger", {
+        type: "carousel",
+        gap: 20,
+        perView: perView,
+        breakpoints: {
+          1024: {
+            perView: 3,
+          },
 
-    glideDiger.mount();
+          780: {
+            perView: 2,
+          },
+          500: {
+            perView: 1,
+          },
+        },
+      });
 
-    
-  }, []);
+      glideDiger.mount();
+
+    }
+
+  }, [projeler]);
 
   return (
     <div className="glideDiger">
