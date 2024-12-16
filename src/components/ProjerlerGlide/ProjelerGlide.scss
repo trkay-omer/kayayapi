@@ -1,0 +1,27 @@
+.glideDiger {
+    position: relative;
+  .glide__arrows {
+    button {
+      position: absolute;
+      border: none;
+      font-size: 10px;
+      background-color: none;
+      top: 45%;
+      border-radius: 30%;
+      height: 70px;
+      color: black;
+      box-shadow: none;
+      text-shadow: none;
+      .icon {
+        font-size: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+
+    @media (max-width:1024px) {
+      display: none;
+    }
+  }
+}

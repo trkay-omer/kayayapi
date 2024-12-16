@@ -1,0 +1,48 @@
+.iletisim {
+  margin-top: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 6rem;
+
+  .content {
+    padding-top: 2rem;
+    display: flex;
+    gap: 5rem;
+    width: 100%;
+
+    .map {
+      width: 50%;
+
+      .iframe {
+        border-radius: 15px;
+      }
+    }
+
+    .infoIletisim {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2rem;
+
+      .itemIletisim{
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+
+        .itemList{
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .medyas{
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+            
+        }
+      }
+      
+    }
+  }
+}

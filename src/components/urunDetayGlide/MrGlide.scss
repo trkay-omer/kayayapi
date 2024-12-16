@@ -1,0 +1,27 @@
+.glideResim {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  .glide__track {
+    width: 100%;
+    height: 100%;
+    .glide__slides {
+      width: 100% !important;
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+
+      .glide__slide {
+        width: 100%;
+        height: 100%;
+        margin-left: 0;
+
+        img {
+          width: 100%;
+          height: 100%;
+          border: 1px solid transparent;
+        }
+      }
+    }
+  }
+}
