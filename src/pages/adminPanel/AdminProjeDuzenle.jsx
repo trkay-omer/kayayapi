@@ -1,8 +1,68 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./AdminProjeDuzenle.scss";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AdminProjeDuzenle = () => {
+  const {id} = useParams();
+  const token = localStorage.getItem('authToken');
   const [images, setImages] = useState([]);
+  const [formData, setFormData] = useState({
+    type: "house",
+    sehir: "",
+    ilce: "",
+    title: "",
+    content: "",
+    price: "",
+    brutMetrekare: "",
+    isitma: "",
+    odaSayisi: "",
+    mutfakTipi: false,
+    otopark: false,
+    havuz: false,
+    oyunPark: false,
+    güvenlik: false,
+    sporSalon: false,
+    context1: "",
+    context2: "",
+    context3: "",
+  });
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/v1/post/get-by-id?id=${id}`);
+        setFormData((prevState) => ({
+          ...prevState,
+          type: "house",
+          sehir: response.data.postDetails.sehir || "",
+          ilce: response.data.postDetails.ilce || "",
+          title: response.data.title,
+          content: response.data.content,
+          price: response.data.postDetails.fiyat || "",
+          brutMetrekare: response.data.postDetails.brutMetrekare || "",
+          isitma: response.data.postDetails.isitma || "",
+          odaSayisi: response.data.postDetails.odaSayisi || "",
+          mutfakTipi: response.data.postDetails.mutfakTipi || false,
+          otopark: response.data.postDetails.otopark || false,
+          havuz: response.data.postDetails.havuz || false,
+          oyunPark: response.data.postDetails.oyunPark || false,
+          güvenlik: response.data.postDetails.güvenlik || false,
+          sporSalon: response.data.postDetails.sporSalon || false,
+          context1: response.data.postDetails.context1 || "",
+          context2: response.data.postDetails.context2 || "",
+          context3: response.data.postDetails.context3 || "",
+        }));
+
+        console.log(response.data)
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // Resim Yükleme
   const handleImageUpload = (event) => {
@@ -16,22 +76,6 @@ const AdminProjeDuzenle = () => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
-  const [formData, setFormData] = useState({
-    projectName: "",
-    varlıkType: "house",
-    grossArea: "",
-    heating: "",
-    kitchenType: false,
-    parking: false,
-    pool: false,
-    playground: false,
-    security: false,
-    sportsAreas: false,
-    description1: "",
-    description2: "",
-    description3: "",
-  });
-
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -40,10 +84,21 @@ const AdminProjeDuzenle = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Proje Bilgileri:", formData);
-    console.log(images);
+    try {
+      const response = await axios.put(`http://localhost:8080/api/v1/post?id=${id}`, formData, {
+        headers: {
+          Authorization:`Bearer ${token}`, // Authorization header'ı ekleyin
+        },
+      });
+  
+      console.log('Başarılı:', response.data);
+      navigate("/admin/projeler");
+
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   return (
@@ -107,8 +162,8 @@ const AdminProjeDuzenle = () => {
               Proje İsmi:
               <input
                 type="text"
-                name="projectName"
-                value={formData.projectName}
+                name="title"
+                value={formData.title}
                 onChange={handleChange}
                 required
               />
@@ -118,11 +173,11 @@ const AdminProjeDuzenle = () => {
           <div>
             <label>
               Proje Tipi:
-              <select name="varlıkTypeDisabled" value="house" disabled>
+              <select name="varlıkTypeDisabled" value={"house"} disabled>
                 <option value="house">Konut</option>
                 <option value="land">Arsa</option>
               </select>
-              <input type="hidden" name="varlıkType" value="house" />
+              <input type="hidden" name="type" value="house" />
             </label>
           </div>
 
@@ -130,8 +185,8 @@ const AdminProjeDuzenle = () => {
             <label>
               Oda Sayısı:
               <select
-                name="roomCount"
-                value={formData.roomCount}
+                name="odaSayisi"
+                value={formData.odaSayisi}
                 onChange={handleChange}
                 required
               >
@@ -148,8 +203,8 @@ const AdminProjeDuzenle = () => {
               Brüt m²:
               <input
                 type="text"
-                name="grossArea"
-                value={formData.grossArea}
+                name="brutMetrekare"
+                value={formData.brutMetrekare}
                 onChange={handleChange}
                 required
               />
@@ -161,8 +216,8 @@ const AdminProjeDuzenle = () => {
               Isıtma:
               <input
                 type="text"
-                name="heating"
-                value={formData.heating}
+                name="isitma"
+                value={formData.isitma}
                 onChange={handleChange}
                 required
               />
@@ -174,8 +229,8 @@ const AdminProjeDuzenle = () => {
               Kapalı Mutfak:
               <input
                 type="checkbox"
-                name="kitchenType"
-                checked={formData.kitchenType}
+                name="mutfakTipi"
+                checked={formData.mutfakTipi}
                 onChange={handleChange}
               />
             </label>
@@ -186,8 +241,8 @@ const AdminProjeDuzenle = () => {
               Otopark:
               <input
                 type="checkbox"
-                name="parking"
-                checked={formData.parking}
+                name="otopark"
+                checked={formData.otopark}
                 onChange={handleChange}
               />
             </label>
@@ -198,8 +253,8 @@ const AdminProjeDuzenle = () => {
               Havuz:
               <input
                 type="checkbox"
-                name="pool"
-                checked={formData.pool}
+                name="havuz"
+                checked={formData.havuz}
                 onChange={handleChange}
               />
             </label>
@@ -210,8 +265,8 @@ const AdminProjeDuzenle = () => {
               Oyun Parkı:
               <input
                 type="checkbox"
-                name="playground"
-                checked={formData.playground}
+                name="oyunPark"
+                checked={formData.oyunPark}
                 onChange={handleChange}
               />
             </label>
@@ -222,8 +277,8 @@ const AdminProjeDuzenle = () => {
               Güvenlik:
               <input
                 type="checkbox"
-                name="security"
-                checked={formData.security}
+                name="güvenlik"
+                checked={formData.güvenlik}
                 onChange={handleChange}
               />
             </label>
@@ -234,8 +289,8 @@ const AdminProjeDuzenle = () => {
               Spor Alanları:
               <input
                 type="checkbox"
-                name="sportsAreas"
-                checked={formData.sportsAreas}
+                name="sporSalon"
+                checked={formData.sporSalon}
                 onChange={handleChange}
               />
             </label>
@@ -245,8 +300,8 @@ const AdminProjeDuzenle = () => {
             <label>
               Açıklama 1:
               <textarea
-                name="description1"
-                value={formData.description1}
+                name="context1"
+                value={formData.context1}
                 onChange={handleChange}
                 required
               />
@@ -257,8 +312,8 @@ const AdminProjeDuzenle = () => {
             <label>
               Açıklama 2:
               <textarea
-                name="description2"
-                value={formData.description2}
+                name="context2"
+                value={formData.context2}
                 onChange={handleChange}
                 required
               />
@@ -269,8 +324,8 @@ const AdminProjeDuzenle = () => {
             <label>
               Açıklama 3:
               <textarea
-                name="description3"
-                value={formData.description3}
+                name="context3"
+                value={formData.context3}
                 onChange={handleChange}
                 required
               />

@@ -29,23 +29,23 @@ function App() {
         <Route path="/iletisim" element={<Iletisim />} />
         <Route path="/hakkimizda" element={<Hakkimizda />} />
         <Route path="/admin-login" element={<AdminLogin />} />
-          <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="ekle" element={<AdminProjeEkle />} />
-            <Route path="projeler" element={<AdminProjeler />} />
-            <Route path="duzenle" element={<AdminProjeDuzenle />} />
-          </Route>
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="ekle" element={<AdminProjeEkle />} />
+          <Route path="projeler" element={<AdminProjeler />} />
+          <Route path="projeler/:id" element={<AdminProjeDuzenle />} />
+        </Route>
       </Routes>
       <FooterTop />
       <Footer />
-      </AuthProvider>
+    </AuthProvider>
   );
 }
 

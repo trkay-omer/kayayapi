@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import "./ListCardDelete.scss";
 import img from "/images/slider/1.jpg";
 
-const ListCardDelete = () => {
+const ListCardDelete = ({proje}) => {
     return (
         <div className="projeCardDelete">
           <div className="img">
@@ -11,25 +11,18 @@ const ListCardDelete = () => {
           <div className="detayCard">
             <div className="desc">
               <div className="title">
-                <h3>Proje İsmi</h3>
+                <h3>{proje.title}</h3>
               </div>
               <div className="text">
                 <p>
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                  Molestias, ratione!
+                  {proje.content}
                 </p>
               </div>
     
-              <div className="text">
-                <p>
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Itaque
-                  neque fuga quia non perferendis nobis commodi rerum nihil corrupti
-                  laborum.
-                </p>
-              </div>
+              
             </div>
             <div className="buttonCard">
-              <Link to="/projedetay" target="_blank" rel="noopener noreferrer">
+              <Link to={`/projeler/${proje.id}`} target="_blank" rel="noopener noreferrer">
                 <button>Projeye Git</button>
               </Link>
 
@@ -37,7 +30,7 @@ const ListCardDelete = () => {
                 <button className="delete">Sil</button>
               </Link>
 
-              <Link to="/admin/duzenle">
+              <Link to={`/admin/projeler/${proje.id}`}>
                 <button className="update">Düzenle</button>
               </Link>
             </div>
