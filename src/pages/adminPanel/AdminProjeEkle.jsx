@@ -1,7 +1,9 @@
 import { useState } from "react";
 import "./AdminProjeEkle.scss";
+import axios from "axios";
 
 const AdminProjeEkle = () => {
+  const token = localStorage.getItem('authToken');
   const [images, setImages] = useState([]);
 
   // Resim Yükleme
@@ -17,18 +19,25 @@ const AdminProjeEkle = () => {
   };
 
   const [formData, setFormData] = useState({
-    projectName: "",
-    grossArea: "",
-    heating: "",
-    kitchenType: false,
-    parking: false,
-    pool: false,
-    playground: false,
-    security: false,
-    sportsAreas: false,
-    description1: "",
-    description2: "",
-    description3: "",
+    type: "house",
+    sehir: "",
+    ilce: "",
+    title: "",
+    content: "",
+    price: "",
+    brutMetrekare: "",
+    isitma: "",
+    odaSayisi: "",
+    mutfakTipi: false,
+    otopark: false,
+    havuz: false,
+    oyunPark: false,
+    güvenlik: false,
+    sporSalon: false,
+    context1: "",
+    context2: "",
+    context3: "",
+
   });
 
   const handleChange = (e) => {
@@ -39,11 +48,22 @@ const AdminProjeEkle = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log("Proje Bilgileri:", formData);
-    console.log(images);
+    try {
+      const response = await axios.post('http://localhost:8080/api/v1/post', formData, {
+        headers: {
+          Authorization:`Bearer ${token}`, // Authorization header'ı ekleyin
+        },
+      });
+  
+      console.log('Başarılı:', response.data);
+    } catch (error) {
+      console.log(error)
+    }
   };
+
+
   return (
     <div className="projeList">
       <div className="title">
@@ -105,8 +125,8 @@ const AdminProjeEkle = () => {
               Proje İsmi:
               <input
                 type="text"
-                name="projectName"
-                value={formData.projectName}
+                name="title"
+                value={formData.title}
                 onChange={handleChange}
                 required
               />
@@ -120,7 +140,7 @@ const AdminProjeEkle = () => {
                 <option value="house">Konut</option>
                 <option value="land">Arsa</option>
               </select>
-              <input type="hidden" name="varlıkType" value="house" />
+              <input type="hidden" name="type" value="house" />
             </label>
           </div>
 
@@ -128,8 +148,8 @@ const AdminProjeEkle = () => {
             <label>
               Oda Sayısı:
               <select
-                name="roomCount"
-                value={formData.roomCount}
+                name="odaSayisi"
+                value={formData.odaSayisi}
                 onChange={handleChange}
                 required
               >
@@ -146,8 +166,8 @@ const AdminProjeEkle = () => {
               Brüt m²:
               <input
                 type="text"
-                name="grossArea"
-                value={formData.grossArea}
+                name="brutMetrekare"
+                value={formData.brutMetrekare}
                 onChange={handleChange}
                 required
               />
@@ -159,8 +179,8 @@ const AdminProjeEkle = () => {
               Isıtma:
               <input
                 type="text"
-                name="heating"
-                value={formData.heating}
+                name="isitma"
+                value={formData.isitma}
                 onChange={handleChange}
                 required
               />
@@ -172,8 +192,8 @@ const AdminProjeEkle = () => {
               Kapalı Mutfak:
               <input
                 type="checkbox"
-                name="kitchenType"
-                checked={formData.kitchenType}
+                name="mutfakTipi"
+                checked={formData.mutfakTipi}
                 onChange={handleChange}
               />
             </label>
@@ -184,8 +204,8 @@ const AdminProjeEkle = () => {
               Otopark:
               <input
                 type="checkbox"
-                name="parking"
-                checked={formData.parking}
+                name="otopark"
+                checked={formData.otopark}
                 onChange={handleChange}
               />
             </label>
@@ -196,8 +216,8 @@ const AdminProjeEkle = () => {
               Havuz:
               <input
                 type="checkbox"
-                name="pool"
-                checked={formData.pool}
+                name="havuz"
+                checked={formData.havuz}
                 onChange={handleChange}
               />
             </label>
@@ -208,8 +228,8 @@ const AdminProjeEkle = () => {
               Oyun Parkı:
               <input
                 type="checkbox"
-                name="playground"
-                checked={formData.playground}
+                name="oyunPark"
+                checked={formData.oyunPark}
                 onChange={handleChange}
               />
             </label>
@@ -220,8 +240,8 @@ const AdminProjeEkle = () => {
               Güvenlik:
               <input
                 type="checkbox"
-                name="security"
-                checked={formData.security}
+                name="güvenlik"
+                checked={formData.güvenlik}
                 onChange={handleChange}
               />
             </label>
@@ -232,8 +252,8 @@ const AdminProjeEkle = () => {
               Spor Alanları:
               <input
                 type="checkbox"
-                name="sportsAreas"
-                checked={formData.sportsAreas}
+                name="sporSalon"
+                checked={formData.sporSalon}
                 onChange={handleChange}
               />
             </label>
@@ -243,8 +263,8 @@ const AdminProjeEkle = () => {
             <label>
               Açıklama 1:
               <textarea
-                name="description1"
-                value={formData.description1}
+                name="context1"
+                value={formData.context1}
                 onChange={handleChange}
                 required
               />
@@ -255,8 +275,8 @@ const AdminProjeEkle = () => {
             <label>
               Açıklama 2:
               <textarea
-                name="description2"
-                value={formData.description2}
+                name="context2"
+                value={formData.context2}
                 onChange={handleChange}
                 required
               />
@@ -267,8 +287,8 @@ const AdminProjeEkle = () => {
             <label>
               Açıklama 3:
               <textarea
-                name="description3"
-                value={formData.description3}
+                name="context3"
+                value={formData.context3}
                 onChange={handleChange}
                 required
               />

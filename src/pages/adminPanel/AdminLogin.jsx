@@ -26,7 +26,7 @@ const AdminLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("https://your-api-url.com/login", formData);
+      const response = await axios.post("http://localhost:8080/api/v1/auth/login", formData);
       const token = response.data.token;
 
       if (token) {
