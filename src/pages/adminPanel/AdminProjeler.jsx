@@ -1,10 +1,10 @@
-import "./AdminProjeSil.scss";
+import "./AdminProjeler.scss";
 import ListCardDelete from "../../components/listCardDelete/ListCardDelete";
 const AdminProjeSil = () => {
   return (
     <div className="projeList">
       <div className="title">
-        <h4>Proje Sil</h4>
+        <h4>Projeler</h4>
         <hr />
       </div>
 

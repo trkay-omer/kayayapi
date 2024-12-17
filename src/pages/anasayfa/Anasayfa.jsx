@@ -20,12 +20,12 @@ const Anasayfa = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/v1/post/small?page=0&size=10');
-        console.log('Data:', response.data); // Çekilen veriler burada
-        const data = response.data
-        setProjeler(data);
+        const response = await axios.get(
+          "http://localhost:8080/api/v1/post/small?page=0&size=10"
+        );
+        setProjeler(response.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -37,12 +37,9 @@ const Anasayfa = () => {
       // autoplay: 4000,
     });
 
-
     fetchData();
     glide.mount();
   }, []);
-
-
 
   const faqs = [
     {

@@ -54,7 +54,7 @@ const AdminProjeEkle = () => {
       <div className="projeEkle">
         <form onSubmit={handleSubmit}>
           <div className="uploader-container">
-            <div style={{display:"flex", justifyContent:"space-between"}} className="baslikAndButton">
+            <div style={{display:"flex", justifyContent:"space-between", marginBottom:"2rem"}} className="baslikAndButton">
             <h4>Proje Resimleri Yükle</h4>
             <input
               type="file"
@@ -78,7 +78,7 @@ const AdminProjeEkle = () => {
                 }}
               >
                 {images.length > 0
-                  ? `Resim Seç: ${images.length}`
+                  ? `Resim Ekle: ${images.length}`
                   : "Resim Seç"}
               </label>
             </div>

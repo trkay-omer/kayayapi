@@ -81,7 +81,7 @@ const ProjeDetay = () => {
   };
 
   if ((proje==null || digerProjeler == []) ) {
-    return <div>Yükleniyor...</div>;
+    return <div style={{marginTop:"140px"}}>Yükleniyor...</div>;
   }
 
   return (

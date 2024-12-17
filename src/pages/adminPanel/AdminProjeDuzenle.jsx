@@ -56,7 +56,7 @@ const AdminProjeDuzenle = () => {
       <div className="projeDuzenle">
         <form onSubmit={handleSubmit}>
         <div className="uploader-container">
-            <div style={{display:"flex", justifyContent:"space-between"}} className="baslikAndButton">
+            <div style={{display:"flex", justifyContent:"space-between", marginBottom:"2rem"}} className="baslikAndButton">
             <h4>Proje Resimlerini Düzenle</h4>
             <input
               type="file"

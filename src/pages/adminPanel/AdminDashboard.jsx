@@ -25,7 +25,7 @@ const AdminDashboard = () => {
                   </li>
                   
                   <li>
-                    <Link to="/admin/sil">
+                    <Link to="/admin/projeler">
                       <span>Projeler</span>
                       <ChevronRightOutlinedIcon
                         style={{ fontSize: "1.2rem" }}
