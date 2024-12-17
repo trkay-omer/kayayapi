@@ -5,11 +5,9 @@ import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 
 const AdminLogin = () => {
-
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
-  const { login } = useAuth();
-  const { isAuthenticated } = useAuth(); // Kullanıcının giriş durumu
+  const { login, isAuthenticated } = useAuth(); // Kullanıcının giriş durumu
   const navigate = useNavigate();
 
 

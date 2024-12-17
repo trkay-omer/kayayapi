@@ -1,9 +1,15 @@
-import  { createContext, useState, useContext } from "react";
-
+import  { createContext, useState, useContext, useEffect } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      setIsAuthenticated(true); // Eğer token varsa, kullanıcıyı oturum açmış olarak işaretle
+    }
+  }, []);
 
   // Giriş yapıldığında çağrılır
   const login = (token) => {
