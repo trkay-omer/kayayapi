@@ -4,11 +4,15 @@ import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined";
 import LİstCard from "../../components/listCard/LİstCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import FilterListIcon from '@mui/icons-material/FilterList'; // Filtre ikonunu ekliyoruz
+
 
 const Projeler = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const [projeler, setProjeler] = useState([]);
   useEffect(() => {
-    
+
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:8080/api/v1/post/small?page=0&size=10');
@@ -23,11 +27,17 @@ const Projeler = () => {
     fetchData();
   }, []);
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen); // Sidebar'ı açma ve kapama işlemi
+  };
+
   return (
     <div className="projeler">
       <div className="container">
         <div className="contentProjeler">
-          <sidebar className="sidebar">
+
+
+          <sidebar className={`sidebar ${sidebarOpen ? "open" : ""}`}>
             <div className="categories">
               <div className="title">
                 <h4>Filtreleme</h4>
@@ -60,8 +70,8 @@ const Projeler = () => {
                       />
                     </Link>
                   </li>
-                  
-                 
+
+
                 </ul>
               </div>
             </div>
@@ -69,16 +79,21 @@ const Projeler = () => {
 
           <div className="projeList">
             <div className="title">
-              <h4>Kategoriler</h4>
+              <div style={{display:"flex", gap:"2rem", justifyContent:"space-between", alignItems:"center"}}>
+                <h4>Projeler</h4>
+                <div className="filterIcon" onClick={toggleSidebar}>
+                  <FilterListIcon style={{ fontSize: "1.2rem", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center" }} />
+                </div>
+              </div>
               <hr />
             </div>
             <div className="list">
-            {projeler.map((proje, index) => (
-                 <LİstCard key={index} proje={proje}/>
+              {projeler.map((proje, index) => (
+                <LİstCard key={index} proje={proje} />
               ))}
 
-               
-                
+
+
             </div>
           </div>
         </div>

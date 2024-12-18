@@ -6,7 +6,7 @@
     display: flex;
     gap: 3rem;
     flex: 10;
-    padding-top: 3rem;
+    padding-top: 2rem;
 
     .title {
       display: flex;
@@ -70,4 +70,44 @@
       }
     }
   }
+
+  .filterIcon {
+    display: none; /* Varsayılan olarak gizli */
+    z-index: 998;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    padding: 16px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);    
+  }
+
+  @media (max-width: 1024px) {
+    /* Mobil ve tabletde sidebar'ı gizleyip filtreleme ikonunu gösteriyoruz */
+    .filterIcon {
+      display: block;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: -250px; /* Sidebar gizli olarak başlar */
+      top:0;
+      width: 250px;
+      height: 100%;
+      background-color: #fff;
+      box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
+      // transition: left 0.3s ease;
+    }
+
+    /* Sidebar açıldığında */
+    .sidebar.open {
+      left: 10px;
+      padding-top: calc(156px + 4rem);
+    }
+
+    .contentProjeler {
+      gap: 0;
+    }
+  }
+
+
 }
