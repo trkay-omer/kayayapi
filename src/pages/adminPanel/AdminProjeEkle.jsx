@@ -1,23 +1,12 @@
 import { useState } from "react";
 import "./AdminProjeEkle.scss";
 import axios from "axios";
+import imgKapak from "/images/acardion/2.jpg";
 
 const AdminProjeEkle = () => {
   const token = localStorage.getItem('authToken');
   const [images, setImages] = useState([]);
-
-  // Resim Yükleme
-  const handleImageUpload = (event) => {
-    const files = Array.from(event.target.files);
-    const imageUrls = files.map((file) => URL.createObjectURL(file));
-    setImages((prevImages) => [...prevImages, ...imageUrls]);
-  };
-
-  // Resim Silme
-  const handleRemoveImage = (index) => {
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
-  };
-
+  const [imgKapak, setImgKapak] = useState(null);
   const [formData, setFormData] = useState({
     type: "house",
     sehir: "",
@@ -40,6 +29,23 @@ const AdminProjeEkle = () => {
 
   });
 
+  // Form Submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:8080/api/v1/post', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Authorization header'ı ekleyin
+        },
+      });
+
+      console.log('Başarılı:', response.data);
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+  // Form Degisiklik
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -48,19 +54,33 @@ const AdminProjeEkle = () => {
     });
   };
 
-  const handleSubmit = async(e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:8080/api/v1/post', formData, {
-        headers: {
-          Authorization:`Bearer ${token}`, // Authorization header'ı ekleyin
-        },
-      });
-  
-      console.log('Başarılı:', response.data);
-    } catch (error) {
-      console.log(error)
+  // Resim Yükleme
+  const handleImageUpload = (event) => {
+    const files = Array.from(event.target.files);
+    const imageUrls = files.map((file) => URL.createObjectURL(file));
+    setImages((prevImages) => [...prevImages, ...imageUrls]);
+  };
+
+  // Resim Silme
+  const handleRemoveImage = (index) => {
+    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  };
+
+  // Kapak Fotografı yükleme
+  const handleKapakImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => setImgKapak(reader.result);
+      reader.readAsDataURL(file);
+    } else {
+      alert("Lütfen bir resim dosyası seçin!");
     }
+  };
+
+  // Kapak Fotografı silme
+  const handleKapakRemoveImage = () => {
+    setImgKapak(null);
   };
 
 
@@ -74,36 +94,36 @@ const AdminProjeEkle = () => {
       <div className="projeEkle">
         <form onSubmit={handleSubmit}>
           <div className="uploader-container">
-            <div style={{display:"flex", justifyContent:"space-between", marginBottom:"2rem"}} className="baslikAndButton">
-            <h4>Proje Resimleri Yükle</h4>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageUpload}
-              className="upload-input"
-              id="file-input"
-            />
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "2rem" }} className="baslikAndButton">
+              <h4>Proje Resimleri Yükle</h4>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageUpload}
+                className="upload-input"
+                id="file-input"
+              />
 
-            <div>
-              <label
-                htmlFor="file-input"
-                style={{
-                  cursor: "pointer",
-                  display: "inline-block",
-                  padding: "10px",
-                  backgroundColor: "#007BFF",
-                  color: "#fff",
-                  borderRadius: "5px",
-                }}
-              >
-                {images.length > 0
-                  ? `Resim Ekle: ${images.length}`
-                  : "Resim Seç"}
-              </label>
+              <div>
+                <label
+                  htmlFor="file-input"
+                  style={{
+                    cursor: "pointer",
+                    display: "inline-block",
+                    padding: "10px",
+                    backgroundColor: "#007BFF",
+                    color: "#fff",
+                    borderRadius: "5px",
+                  }}
+                >
+                  {images.length > 0
+                    ? `Resim Ekle: ${images.length}`
+                    : "Resim Seç"}
+                </label>
+              </div>
             </div>
-            </div>
-           
+
 
             <div className="images-preview-container">
               {images.map((image, index) => (
@@ -118,6 +138,69 @@ const AdminProjeEkle = () => {
                 </div>
               ))}
             </div>
+          </div>
+
+          <div className="uploader-container">
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "2rem" }} className="baslikAndButton">
+              <h4>Kapak Fotoğrafı Yükle</h4>
+              <input
+                type="file"
+                accept="image/*"
+                className="upload-input"
+                id="kapakFoto"
+                onChange={handleKapakImageChange}
+                style={{ display: "none" }}
+              />
+
+              <div>
+                <label
+                  htmlFor="kapakFoto"
+                  style={{
+                    cursor: "pointer",
+                    display: "inline-block",
+                    padding: "10px",
+                    backgroundColor: "#007BFF",
+                    color: "#fff",
+                    borderRadius: "5px",
+                  }}
+                >
+                  {imgKapak
+                    ? "Resiim Değiştir"
+                    : "Resim Seç"}
+                </label>
+              </div>
+            </div>
+
+
+            {imgKapak && (
+              <div className="images-preview-container">
+                <div className="image-container" style={{ position: "relative" }}>
+                  <img
+                    src={imgKapak}
+                    alt="Kapak"
+                    style={{ maxWidth: "100%", maxHeight: "200px" }}
+                  />
+                  <button
+                    className="remove-button"
+                    style={{
+                      position: "absolute",
+                      top: "10px",
+                      right: "10px",
+                      backgroundColor: "red",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: "30px",
+                      height: "30px",
+                      cursor: "pointer",
+                    }}
+                    onClick={handleKapakRemoveImage}
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           <div>
@@ -143,6 +226,47 @@ const AdminProjeEkle = () => {
               <input type="hidden" name="type" value="house" />
             </label>
           </div>
+
+
+          <div>
+            <label>
+              Fiyat:
+              <input
+                type="text"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          </div>
+
+          <div>
+            <label>
+              Şehir:
+              <input
+                type="text"
+                name="sehir"
+                value={formData.sehir}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          </div>
+
+          <div>
+            <label>
+              İlçe:
+              <input
+                type="text"
+                name="ilce"
+                value={formData.ilce}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          </div>
+
 
           <div>
             <label>

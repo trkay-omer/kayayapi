@@ -29,7 +29,7 @@ function App() {
         <Route path="/iletisim" element={<Iletisim />} />
         <Route path="/hakkimizda" element={<Hakkimizda />} />
         <Route path="/admin-login" element={<AdminLogin />} />
-        <Route path="/unauthorized" element={<Unauthorized />} />
+        
         <Route
           path="/admin"
           element={
@@ -42,6 +42,7 @@ function App() {
           <Route path="projeler" element={<AdminProjeler />} />
           <Route path="projeler/:id" element={<AdminProjeDuzenle />} />
         </Route>
+        <Route path="/unauthorized" element={<Unauthorized />} />
       </Routes>
       <FooterTop />
       <Footer />

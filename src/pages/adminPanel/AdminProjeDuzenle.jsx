@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import "./AdminProjeDuzenle.scss";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import imgKapak from "/images/acardion/2.jpg";
+
 
 const AdminProjeDuzenle = () => {
-  const {id} = useParams();
+  const navigate = useNavigate()
+  const { id } = useParams();
   const token = localStorage.getItem('authToken');
+
+  const [imgKapak, setImgKapak] = useState(null);
   const [images, setImages] = useState([]);
   const [formData, setFormData] = useState({
     type: "house",
@@ -27,7 +32,7 @@ const AdminProjeDuzenle = () => {
     context2: "",
     context3: "",
   });
-  const navigate = useNavigate()
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,7 +60,9 @@ const AdminProjeDuzenle = () => {
           context3: response.data.postDetails.context3 || "",
         }));
 
-        console.log(response.data)
+        console.log(response.data);
+
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -63,6 +70,33 @@ const AdminProjeDuzenle = () => {
 
     fetchData();
   }, []);
+
+  // Form Submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.put(`http://localhost:8080/api/v1/post?id=${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Authorization header'ı ekleyin
+        },
+      });
+
+      console.log('Başarılı:', response.data);
+      navigate("/admin/projeler");
+
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+  // Form Değişiklik
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
 
   // Resim Yükleme
   const handleImageUpload = (event) => {
@@ -76,30 +110,24 @@ const AdminProjeDuzenle = () => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.put(`http://localhost:8080/api/v1/post?id=${id}`, formData, {
-        headers: {
-          Authorization:`Bearer ${token}`, // Authorization header'ı ekleyin
-        },
-      });
-  
-      console.log('Başarılı:', response.data);
-      navigate("/admin/projeler");
-
-    } catch (error) {
-      console.log(error)
+  // Kapak Fotografı yükleme
+  const handleKapakImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => setImgKapak(reader.result);
+      reader.readAsDataURL(file);
+    } else {
+      alert("Lütfen bir resim dosyası seçin!");
     }
   };
+
+  // Kapak Fotografı silme
+  const handleKapakRemoveImage = () => {
+    setImgKapak(null);
+  };
+
+
 
   return (
     <div className="projeList">
@@ -110,37 +138,37 @@ const AdminProjeDuzenle = () => {
 
       <div className="projeDuzenle">
         <form onSubmit={handleSubmit}>
-        <div className="uploader-container">
-            <div style={{display:"flex", justifyContent:"space-between", marginBottom:"2rem"}} className="baslikAndButton">
-            <h4>Proje Resimlerini Düzenle</h4>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageUpload}
-              className="upload-input"
-              id="file-input"
-            />
+          <div className="uploader-container">
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "2rem" }} className="baslikAndButton">
+              <h4>Proje Resimlerini Düzenle</h4>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageUpload}
+                className="upload-input"
+                id="file-input"
+              />
 
-            <div>
-              <label
-                htmlFor="file-input"
-                style={{
-                  cursor: "pointer",
-                  display: "inline-block",
-                  padding: "10px",
-                  backgroundColor: "#007BFF",
-                  color: "#fff",
-                  borderRadius: "5px",
-                }}
-              >
-                {images.length > 0
-                  ? `Resim Ekle: ${images.length}`
-                  : "Resim Seç"}
-              </label>
+              <div>
+                <label
+                  htmlFor="file-input"
+                  style={{
+                    cursor: "pointer",
+                    display: "inline-block",
+                    padding: "10px",
+                    backgroundColor: "#007BFF",
+                    color: "#fff",
+                    borderRadius: "5px",
+                  }}
+                >
+                  {images.length > 0
+                    ? `Resim Ekle: ${images.length}`
+                    : "Resim Seç"}
+                </label>
+              </div>
             </div>
-            </div>
-           
+
 
             <div className="images-preview-container">
               {images.map((image, index) => (
@@ -155,6 +183,69 @@ const AdminProjeDuzenle = () => {
                 </div>
               ))}
             </div>
+          </div>
+
+          <div className="uploader-container">
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "2rem" }} className="baslikAndButton">
+              <h4>Kapak Fotoğrafı Yükle</h4>
+              <input
+                type="file"
+                accept="image/*"
+                className="upload-input"
+                id="kapakFoto"
+                onChange={handleKapakImageChange}
+                style={{ display: "none" }}
+              />
+
+              <div>
+                <label
+                  htmlFor="kapakFoto"
+                  style={{
+                    cursor: "pointer",
+                    display: "inline-block",
+                    padding: "10px",
+                    backgroundColor: "#007BFF",
+                    color: "#fff",
+                    borderRadius: "5px",
+                  }}
+                >
+                  {imgKapak
+                    ?  "Resiim Değiştir"
+                    : "Resim Seç"}
+                </label>
+              </div>
+            </div>
+
+
+            {imgKapak && (
+              <div className="images-preview-container">
+                <div className="image-container" style={{ position: "relative" }}>
+                  <img
+                    src={imgKapak}
+                    alt="Kapak"
+                    style={{ maxWidth: "100%", maxHeight: "200px" }}
+                  />
+                  <button
+                    className="remove-button"
+                    style={{
+                      position: "absolute",
+                      top: "10px",
+                      right: "10px",
+                      backgroundColor: "red",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: "30px",
+                      height: "30px",
+                      cursor: "pointer",
+                    }}
+                    onClick={handleKapakRemoveImage}
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           <div>
@@ -178,6 +269,45 @@ const AdminProjeDuzenle = () => {
                 <option value="land">Arsa</option>
               </select>
               <input type="hidden" name="type" value="house" />
+            </label>
+          </div>
+
+          <div>
+            <label>
+              Fiyat:
+              <input
+                type="text"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          </div>
+
+          <div>
+            <label>
+              Şehir:
+              <input
+                type="text"
+                name="sehir"
+                value={formData.sehir}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          </div>
+
+          <div>
+            <label>
+              İlçe:
+              <input
+                type="text"
+                name="ilce"
+                value={formData.ilce}
+                onChange={handleChange}
+                required
+              />
             </label>
           </div>
 
@@ -292,6 +422,18 @@ const AdminProjeDuzenle = () => {
                 name="sporSalon"
                 checked={formData.sporSalon}
                 onChange={handleChange}
+              />
+            </label>
+          </div>
+
+          <div>
+            <label>
+              Content:
+              <textarea
+                name="content"
+                value={formData.content}
+                onChange={handleChange}
+                required
               />
             </label>
           </div>

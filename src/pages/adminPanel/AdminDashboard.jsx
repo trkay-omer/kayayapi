@@ -1,8 +1,16 @@
+import "./AdminDashboard.scss";
 import { Link, Outlet } from "react-router-dom";
 import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined";
+import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
+import { useNavigate} from "react-router-dom";
 
-import "./AdminDashboard.scss";
+
 const AdminDashboard = () => {
+
+  const { logout } = useAuth(); // Kullanıcının giriş durumu
+  const navigate = useNavigate();
+
   return (
     <div className="adminDashboard">
       <div className="container">
@@ -31,6 +39,15 @@ const AdminDashboard = () => {
                         style={{ fontSize: "1.2rem" }}
                       />
                     </Link>
+                  </li>
+
+                  <li>
+                   <button style={{width:"100%",backgroundColor:"white"}} onClick={async  () => {await logout(); navigate("/admin-login");}}>
+                      <span>Çıkış Yap</span>
+                      <ChevronRightOutlinedIcon
+                        style={{ fontSize: "1.2rem" }}
+                      />
+                    </button>
                   </li>
                 </ul>
               </div>
